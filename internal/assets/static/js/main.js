@@ -87,6 +87,16 @@ function updateRelativeTimeForElements(elements)
     }
 }
 
+function isValidUrl(string){
+	let url;
+	try {
+		url = new URL(string);
+	} catch ({ name, message }) {
+		return false;  
+	}
+	return url.protocol === "http:" || url.protocol === "https:";
+}
+
 function setupSearchBoxes() {
     const searchWidgets = document.getElementsByClassName("search");
 
@@ -118,6 +128,10 @@ function setupSearchBoxes() {
 
             if (event.key == "Enter") {
                 const input = inputElement.value.trim();
+				if (isValidUrl(input)) {
+                    window.open(input, '_blank').focus();
+					return;
+				}
                 let query;
                 let searchUrlTemplate;
 
