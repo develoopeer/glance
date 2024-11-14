@@ -88,14 +88,10 @@ function updateRelativeTimeForElements(elements)
     }
 }
 
+// This regex pattern matches example.com and www.example.com cases
 function isValidUrl(string){
-	let url;
-	try {
-		url = new URL(string);
-	} catch ({ name, message }) {
-		return false;  
-	}
-	return url.protocol === "http:" || url.protocol === "https:";
+	const pattern = /^(?:[a-z0-9-]+\.)+[a-z]+$/
+	return pattern.test(string)
 }
 
 function setupSearchBoxes() {
@@ -128,8 +124,11 @@ function setupSearchBoxes() {
             }
 
             if (event.key == "Enter") {
-                const input = inputElement.value.trim();
+                let input = inputElement.value.trim();
 				if (isValidUrl(input)) {
+					if (!input.match(/^https?:\/\//i)) {
+						input = 'http://' + input;
+					}
                     window.open(input, '_blank').focus();
 					return;
 				}
