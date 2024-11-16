@@ -48,7 +48,8 @@ type Monitor struct {
 		*feed.SiteStatusRequest `yaml:",inline"`
 		Status                  *feed.SiteStatus `yaml:"-"`
 		Title                   string           `yaml:"title"`
-		Icon                    CustomIcon       `yaml:"icon"`
+		IconUrl                 string           `yaml:"icon"`
+		IsSimpleIcon            bool             `yaml:"-"`
 		SameTab                 bool             `yaml:"same-tab"`
 		StatusText              string           `yaml:"-"`
 		StatusStyle             string           `yaml:"-"`
@@ -60,6 +61,10 @@ type Monitor struct {
 
 func (widget *Monitor) Initialize() error {
 	widget.withTitle("Monitor").withCacheDuration(5 * time.Minute)
+
+	for i := range widget.Sites {
+		widget.Sites[i].IconUrl, widget.Sites[i].IsSimpleIcon = toSimpleIconIfPrefixed(widget.Sites[i].IconUrl)
+	}
 
 	return nil
 }
